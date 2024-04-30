@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Management System</title>
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@2.42.1/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+  </head>
+  <div>
+    <input type="checkbox" id="addNew" class="modal-toggle" />
+    <div class="modal" role="dialog">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg mb-5">Add New Department</h3>
+        <div class="flex flex-col gap-2">
+          <div>
+            <div class="label">
+              <span class="label-text">Department Code</span>
+            </div>
+            <input
+              id="departmentCodeInput"
+              type="text"
+              placeholder="Code"
+              class="input input-bordered w-full max-w-xs"
+              required
+            />
+          </div>
+          <div>
+            <div class="label">
+              <span class="label-text">Department Name</span>
+            </div>
+            <input
+              id="departmentNameInput"
+              type="text"
+              placeholder="Name"
+              class="input input-bordered w-full max-w-xs"
+              required
+            />
+          </div>
+        </div>
+        <div class="modal-action">
+          <label class="btn btn-info" id="newDepartmentSubmit">Submit</label>
+          <label for="addNew" class="btn btn-error">Cancel</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <input type="checkbox" id="updateDept" class="modal-toggle" />
+    <div class="modal" role="dialog">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg mb-5">Update Department</h3>
+        <div class="flex flex-col gap-2">
+          <div>
+            <div class="label">
+              <span class="label-text">Department Code</span>
+            </div>
+            <input
+              id="updateDeptCode"
+              disabled
+              type="text"
+              placeholder="Code"
+              class="input input-bordered w-full max-w-xs"
+              required
+            />
+          </div>
+          <div>
+            <div class="label">
+              <span class="label-text">Department Name</span>
+            </div>
+            <input
+              id="updateDeptName"
+              type="text"
+              placeholder="Name"
+              class="input input-bordered w-full max-w-xs"
+              required
+            />
+          </div>
+        </div>
+        <div class="modal-action">
+          <label id="confirmUpdateDept" type="submit" class="btn btn-info"
+            >Update</label
+          >
+          <label for="updateDept" class="btn btn-error">Cancel</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <body class="container mx-auto p-4 h-96dvh">
+    <div class="flex flex-col justify-center items-center gap-5">
+      <a class="text-3xl font-bold mb-4 max-w-5xl hover:text-gray-50" href="/"
+        >Management System</a
+      >
+
+      <div class="flex justify-between max-w-2xl w-full">
+        <label class="input input-bordered flex items-center gap-2">
+          <input
+            id="searchBar"
+            type="text"
+            class="grow bg-base-100"
+            placeholder="Search"
+          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            class="w-4 h-4 opacity-70"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </label>
+        <label for="addNew" class="btn btn-success">+ Add New</label>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table table-xs">
+          <thead>
+            <tr>
+              <th>Department Code</th>
+              <th>Department Name</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+  <script src="/service/department.js"></script>
+</html>
