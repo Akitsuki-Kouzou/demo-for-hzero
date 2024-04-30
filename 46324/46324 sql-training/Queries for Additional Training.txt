@@ -1,0 +1,488 @@
+select e.EMPLOYEE_ID, e.FIRST_NAME, e.LAST_NAME, e.EMAIL, e.PHONE_NUMBER, e.HIRE_DATE, e.JOB_ID
+from employees e
+where year(e.hire_date) > 1997;
+
+
+select e.LAST_NAME, e.JOB_ID, e.SALARY, e.COMMISION_PCT
+from employees e
+where e.COMMISION_PCT != 0;
+
+
+SELECT 
+    CONCAT('The salary of ', e.LAST_NAME, ' after a 10% raise is ', ROUND((SALARY * 1.1), 0)) as "New salary"
+FROM 
+    employees e
+WHERE 
+    COMMISION_PCT IS NULL;
+
+
+SELECT 
+    e.LAST_NAME,
+    CONCAT(
+        FLOOR(TIMESTAMPDIFF(MONTH, HIRE_DATE, j.end_date) / 12), 
+        ' years ',
+        MOD(TIMESTAMPDIFF(MONTH, HIRE_DATE, j.end_date), 12),
+        ' months'
+    ) AS YEARS_MONTHS
+FROM employees e
+join job_history j
+on e.EMPLOYEE_ID = j.EMPLOYEE_ID;
+
+
+SELECT last_name
+FROM employees
+WHERE LAST_NAME REGEXP '^[J-K-L-M]';
+
+SELECT 
+    LAST_NAME, salary,
+    CASE 
+        WHEN COMMISION_PCT IS NOT NULL THEN 'Yes'
+        ELSE 'No'
+    END AS Receives_Commission
+FROM employees;
+
+
+SELECT 
+    d.DEPARTMENT_NAME,
+    l.LOCATION_ID,
+    e.LAST_NAME,
+    j.JOB_ID,
+    e.SALARY
+FROM 
+    employees e
+JOIN 
+    departments d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+JOIN 
+    locations l ON d.LOCATION_ID = l.LOCATION_ID
+JOIN 
+    jobs j ON e.JOB_ID = j.JOB_ID
+WHERE 
+    l.LOCATION_ID = 1800;
+    
+    
+SELECT COUNT(*)
+FROM employees
+WHERE LAST_NAME LIKE '%n';
+
+
+SELECT COUNT(*)
+FROM employees
+WHERE RIGHT(LAST_NAME, 1) = 'n';
+
+
+SELECT 
+    d.DEPARTMENT_ID,
+    d.DEPARTMENT_NAME,
+    d.LOCATION_ID,
+    COUNT(e.EMPLOYEE_ID)
+FROM 
+    departments d
+JOIN 
+    employees e ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+JOIN 
+    locations l ON d.LOCATION_ID = l.LOCATION_ID
+GROUP BY 
+    d.DEPARTMENT_ID, d.DEPARTMENT_NAME, d.LOCATION_ID, l.CITY
+order by d.DEPARTMENT_ID asc;
+
+
+SELECT DISTINCT j.JOB_ID
+FROM jobs j
+JOIN employees e ON j.JOB_ID = e.JOB_ID
+JOIN departments d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+WHERE d.DEPARTMENT_ID IN (10, 20);
+
+
+SELECT 
+    j.JOB_ID,
+    COUNT(*) AS FREQUENCY
+FROM 
+    jobs j
+JOIN 
+    employees e ON j.JOB_ID = e.JOB_ID
+JOIN 
+    departments d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+WHERE 
+    d.DEPARTMENT_NAME IN ('Administration', 'Executive')
+GROUP BY 
+    j.JOB_ID
+ORDER BY 
+    FREQUENCY DESC;
+    
+    
+select last_name, hire_date
+from employees
+where day(hire_date) <= 15;
+
+
+SELECT 
+    LAST_NAME,
+    SALARY,
+    SALARY / 1000 AS THOUSANDS
+FROM 
+    employees;
+
+
+SELECT 
+    e1.LAST_NAME AS Last_Name,
+    e2.LAST_NAME AS Manager,
+    e2.SALARY AS Salary,
+    jg.GRADE_LEVEL AS GRA
+FROM 
+    employees e1
+JOIN 
+    employees e2 ON e1.MANAGER_ID = e2.EMPLOYEE_ID
+JOIN 
+    job_grades jg ON e2.SALARY BETWEEN jg.LOWEST_SAL AND jg.HIGHEST_SAL
+WHERE 
+    e2.SALARY > 15000;
+    
+    
+SELECT 
+    d.DEPARTMENT_ID,
+    d.DEPARTMENT_NAME,
+    COUNT(e.EMPLOYEE_ID) AS Num_Employees,
+    AVG(e.SALARY) AS Avg_Salary
+FROM 
+    departments d
+LEFT JOIN 
+    employees e ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+LEFT JOIN 
+    jobs j ON e.JOB_ID = j.JOB_ID
+GROUP BY 
+    d.DEPARTMENT_ID,
+    d.DEPARTMENT_NAME;
+
+	SELECT
+		d.DEPARTMENT_ID,
+		d.DEPARTMENT_NAME,
+		CASE WHEN e.EMPLOYEE_ID = MIN(e.EMPLOYEE_ID) OVER (PARTITION BY d.DEPARTMENT_ID) 
+			 THEN COUNT(e.EMPLOYEE_ID) OVER (PARTITION BY d.DEPARTMENT_ID) 
+			 ELSE NULL 
+		END AS number_of_employees, 
+		AVG(e.SALARY) OVER (PARTITION BY d.DEPARTMENT_ID) AS average_salary,
+		e.LAST_NAME,
+		e.SALARY,
+		e.JOB_ID
+	FROM departments d
+	LEFT JOIN employees e ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+	GROUP BY d.DEPARTMENT_ID, d.DEPARTMENT_NAME, e.LAST_NAME, e.SALARY, e.JOB_ID, e.EMPLOYEE_ID 
+	ORDER BY d.DEPARTMENT_ID, e.LAST_NAME;
+    
+
+SELECT 
+    d.DEPARTMENT_ID,
+    MIN(e.SALARY) AS Lowest_Salary
+FROM 
+    departments d
+JOIN 
+    employees e ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY 
+    d.DEPARTMENT_ID
+ORDER BY 
+    AVG(e.SALARY) DESC
+LIMIT 1;
+
+
+SELECT 
+    d.DEPARTMENT_ID,
+    d.DEPARTMENT_NAME,
+    d.MANAGER_ID,
+    l.LOCATION_ID
+FROM 
+    departments d
+JOIN 
+    locations l ON d.LOCATION_ID = l.LOCATION_ID
+LEFT JOIN 
+    employees e ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+                AND e.JOB_ID = 'SA_REP'
+WHERE 
+    e.EMPLOYEE_ID IS NULL;
+
+
+SELECT 
+    d.DEPARTMENT_ID,
+    d.DEPARTMENT_NAME,
+    COUNT(e.EMPLOYEE_ID) AS Num_Employees
+FROM 
+    departments d
+LEFT JOIN 
+    employees e ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY 
+    d.DEPARTMENT_ID, d.DEPARTMENT_NAME
+HAVING 
+    COUNT(e.EMPLOYEE_ID) < 3;
+
+
+SELECT 
+    d.DEPARTMENT_ID,
+    d.DEPARTMENT_NAME,
+    COUNT(e.EMPLOYEE_ID) AS Num_Employees
+FROM 
+    departments d
+LEFT JOIN 
+    employees e ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY 
+    d.DEPARTMENT_ID, d.DEPARTMENT_NAME
+ORDER BY 
+    COUNT(e.EMPLOYEE_ID) DESC
+LIMIT 1;
+
+
+SELECT 
+    d.DEPARTMENT_ID,
+    d.DEPARTMENT_NAME,
+    COUNT(e.EMPLOYEE_ID) AS Num_Employees
+FROM 
+    departments d
+LEFT JOIN 
+    employees e ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY 
+    d.DEPARTMENT_ID, d.DEPARTMENT_NAME
+ORDER BY 
+    COUNT(e.EMPLOYEE_ID) ASC
+LIMIT 1;
+
+
+SELECT 
+    e.EMPLOYEE_ID,
+    e.LAST_NAME,
+    e.SALARY,
+    e.DEPARTMENT_ID,
+    d.Avg_Salary_Department
+FROM 
+    employees e
+JOIN 
+    (SELECT 
+         DEPARTMENT_ID, 
+         AVG(SALARY) AS Avg_Salary_Department
+     FROM 
+         employees
+     GROUP BY 
+         DEPARTMENT_ID) d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+
+SELECT 
+    LAST_NAME,
+    DAYNAME(HIRE_DATE) AS Day
+FROM 
+    employees
+WHERE 
+    DAYOFWEEK(HIRE_DATE) = (
+        SELECT 
+            DAYOFWEEK(HIRE_DATE) AS DayOfWeek
+        FROM 
+            employees
+        GROUP BY 
+            DayOfWeek
+        ORDER BY 
+            COUNT(*) DESC
+        LIMIT 1
+    );
+
+
+select e.LAST_NAME, concat(monthname(hire_date), " ", dayofweek(hire_date)) as Anniversary
+from employees e
+order by month(hire_date), day(hire_date);
+
+
+SELECT DISTINCT
+    jh1.JOB_ID
+FROM 
+    job_history jh1
+JOIN 
+    job_history jh2 ON jh1.JOB_ID = jh2.JOB_ID
+                    AND YEAR(jh1.START_DATE) = 1990
+                    AND YEAR(jh2.START_DATE) = 1991
+                    AND MONTH(jh1.START_DATE) <= 6
+                    AND MONTH(jh2.START_DATE) <= 6;
+
+
+SELECT 
+    '5% Raise' AS Raise_Percentage,
+    EMPLOYEE_ID,
+    SALARY AS Old_Salary,
+    ROUND(SALARY * 1.05, 2) AS New_Salary
+FROM 
+    employees
+WHERE 
+    DEPARTMENT_ID IN (10, 50, 110)
+
+UNION ALL
+
+SELECT 
+    '10% Raise' AS Raise_Percentage,
+    EMPLOYEE_ID,
+    SALARY AS Old_Salary,
+    ROUND(SALARY * 1.10, 2) AS New_Salary
+FROM 
+    employees
+WHERE 
+    DEPARTMENT_ID = 60
+
+UNION ALL
+
+SELECT 
+    '15% Raise' AS Raise_Percentage,
+    EMPLOYEE_ID,
+    SALARY AS Old_Salary,
+    ROUND(SALARY * 1.15, 2) AS New_Salary
+FROM 
+    employees
+WHERE 
+    DEPARTMENT_ID IN (20, 80)
+
+UNION ALL
+
+SELECT 
+    'No Raise' AS Raise_Percentage,
+    EMPLOYEE_ID,
+    SALARY AS Old_Salary,
+    SALARY AS New_Salary
+FROM 
+    employees
+WHERE 
+    DEPARTMENT_ID = 90;
+
+
+SELECT 
+    LAST_NAME,
+    EXTRACT(MONTH FROM HIRE_DATE) AS Join_Month,
+    HIRE_DATE
+FROM 
+    employees
+WHERE 
+    EXTRACT(MONTH FROM HIRE_DATE) = 1;
+
+
+SELECT 
+    l.CITY,
+    d.DEPARTMENT_NAME,
+    j.JOB_TITLE,
+    e.SALARY
+FROM 
+    departments d
+JOIN 
+    employees e ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+JOIN 
+    locations l ON d.LOCATION_ID = l.LOCATION_ID
+JOIN 
+    jobs j ON e.JOB_ID = j.JOB_ID
+WHERE 
+    d.DEPARTMENT_ID > 80
+ORDER BY
+	e.SALARY asc;
+
+
+SELECT 
+    d.DEPARTMENT_ID,
+    e.JOB_ID,
+    MAX(e.SALARY) AS Max_Salary,
+    MIN(e.SALARY) AS Min_Salary
+FROM 
+    employees e
+JOIN 
+    departments d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+GROUP BY 
+    d.DEPARTMENT_ID, e.JOB_ID
+
+UNION ALL
+
+SELECT 
+    e.JOB_ID,
+    e.MANAGER_ID,
+    MAX(e.SALARY) AS Max_Salary,
+    MIN(e.SALARY) AS Min_Salary
+FROM 
+    employees e
+GROUP BY 
+    e.JOB_ID, e.MANAGER_ID;
+
+
+SELECT 
+    LAST_NAME,
+    SALARY
+FROM 
+    employees
+ORDER BY 
+    SALARY DESC
+LIMIT 3;
+
+
+SELECT 
+    e.EMPLOYEE_ID,
+    e.LAST_NAME
+FROM 
+    employees e
+JOIN 
+    departments d on e.DEPARTMENT_ID = d.DEPARTMENT_ID
+JOIN
+	locations l on d.LOCATION_ID = l.LOCATION_ID
+WHERE 
+    l.STATE_PROVINCE = 'California';
+
+
+SELECT 
+    j.JOB_TITLE,
+    SUM(e.SALARY) AS Job_Total
+FROM 
+    jobs j
+JOIN 
+    employees e ON j.JOB_ID = e.JOB_ID
+GROUP BY 
+    j.JOB_TITLE;
+
+
+SELECT 
+    EMPLOYEE_ID,
+    LAST_NAME,
+    HIRE_DATE,
+    SALARY
+FROM 
+    employees
+WHERE 
+    MANAGER_ID = 102;
+
+SELECT 
+    e.EMPLOYEE_ID,
+    e.LAST_NAME,
+    e.HIRE_DATE,
+    e.SALARY
+FROM 
+    employees e
+WHERE 
+    e.MANAGER_ID = 102;
+
+
+WITH RECURSIVE EmployeeHierarchy AS (
+    SELECT 
+        EMPLOYEE_ID,
+        MANAGER_ID,
+        LAST_NAME,
+        0 AS Level
+    FROM 
+        employees
+    WHERE 
+        MANAGER_ID = 102 -- Employee number of De Haan
+    
+    UNION ALL
+    
+    SELECT 
+        e.EMPLOYEE_ID,
+        e.MANAGER_ID,
+        e.LAST_NAME,
+        Level + 1
+    FROM 
+        employees e
+    INNER JOIN 
+        EmployeeHierarchy eh ON e.MANAGER_ID = eh.EMPLOYEE_ID
+)
+SELECT 
+    EMPLOYEE_ID,
+    MANAGER_ID,
+    LAST_NAME,
+    Level
+FROM 
+    EmployeeHierarchy
+WHERE 
+    Level = 2;
