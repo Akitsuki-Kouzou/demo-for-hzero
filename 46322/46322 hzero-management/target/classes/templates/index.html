@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang = "en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MyWeb</title>
+    <link rel="stylesheet" type ="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+</head>
+<body>
+<div class="container fluid text-center">
+    <h1 style="font-size:8vw">-------Welcome!-------</h1>
+    <a class="h2"th:href="@{/department}" style="font-size:3vw">Manage Departments</a>
+    <p> </p>
+    <a class="h2"th:href="@{/employee}" style="font-size:3vw">Manage Employees</a>
+    <p> </p>
+    <a class="h2"th:href="@{/position}" style="font-size:3vw">Manage Positions</a>
+    <h1 style="font-size:8vw">--------------------------</h1>
+</div>
+</body>
+</html>

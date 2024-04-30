@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang = "en" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset = "UTF-8">
+    <title> [[${pageTitle}]] </title>
+    <link rel = "stylesheet" type = "text/css" th:href = "@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div class="container-fluid">
+    <div class = "text-center"><h2> [[${pageTitle}]] </h2></div>
+
+    <form th:action = "@{/employee/save}" method = "post" th:object = "${employee}"
+          style = "max-width: 500px; margin: 0 auto;">
+        <input type="hidden" th:field = "*{employeeId}">
+        <div class = "border border-secondary rounded p-3">
+            <div class = "form-group row">
+                <label class = "col-sm-4 col-form-label"> Employee Code </label>
+                <div class = "col-sm-8">
+                    <input name = "employeeCode" th:field = "*{employeeCode}" class = "form-control" required minlength = "1" maxlength = "5"/>
+                </div>
+            </div>
+            <div class = "form-group row">
+                <label class = "col-sm-4 col-form-label"> Employee Name: </label>
+                <div class = "col-sm-8">
+                    <input name = "employeeName" th:field = "*{employeeName}" class = "form-control" required minlength = "1" maxlength = "100"/>
+                </div>
+            </div>
+            <div class = "form-group row">
+                <label class = "col-sm-4 col-form-label"> Joining Date </label>
+                <div class = "col-sm-8">
+                    <input type = "date" th:field = "*{joiningDate}" class = "form-control" required minlength = "1" maxlength = "100"/>
+                </div>
+            </div>
+            <div class = "form-group row">
+                <label class = "col-sm-4 col-form-label"> Department </label>
+                <div class = "col-sm-8">
+                    <input name = "employeeDepartment" th:field = "*{employeeDepartment}" class = "form-control" required minlength = "1" maxlength = "100"/>
+                </div>
+            </div>
+            <div class = "form-group row">
+                <label class = "col-sm-4 col-form-label"> Position </label>
+                <div class = "col-sm-8">
+                    <input name = "employeePosition" th:field = "*{employeePosition}" class = "form-control" required minlength = "1" maxlength = "100"/>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type = "submit" class = "btn btn-primary m-2"> Save </button>
+                <button type = "button" class = "btn btn-secondary m-2" onclick = "cancelForm()"> Cancel </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    function cancelForm() {
+        window.location = "[[@{/employee}]]";
+    }
+</script>
+</body>
+</html>
