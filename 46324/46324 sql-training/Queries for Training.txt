@@ -1,0 +1,56 @@
+CREATE VIEW ORDER_VIEW AS
+SELECT OH.HEADER_ID, OH.ORDER_NUMBER, OH.CUSTOMER_ID, OH.ORDER_DATE, OH.ORDER_STATUS, OH.DESCRIPTION,
+       OH.CREATED_BY, OH.CREATION_DATE, OH.LAST_UPDATED_BY, OH.LAST_UPDATE_DATE, OH.LAST_UPDATE_LOGIN,
+       OH.ATTRIBUTE_CATEGORY, OH.ATTRIBUTE1, OH.ATTRIBUTE2, OH.ATTRIBUTE3, OH.ATTRIBUTE4,
+       OH.ATTRIBUTE5, OH.ATTRIBUTE6, OH.ATTRIBUTE7, OH.ATTRIBUTE8, OH.ATTRIBUTE9, OH.ATTRIBUTE10,
+       OH.ATTRIBUTE11, OH.ATTRIBUTE12, OH.ATTRIBUTE13, OH.ATTRIBUTE14, OH.ATTRIBUTE15,
+       C.CUSTOMER_NUMBER, C.CUSTOMER_NAME, C.TELEPHONE
+FROM ORDER_HEADER OH
+JOIN CUSTOMER C ON OH.CUSTOMER_ID = C.CUSTOMER_ID;
+
+select * from order_view;
+
+select o.ORDER_NUMBER, c.CUSTOMER_NUMBER, c.CUSTOMER_NAME, o.ORDER_DATE, o.ORDER_STATUS, o.DESCRIPTION
+from customer c
+join order_header o
+on c.CUSTOMER_ID = o.CUSTOMER_ID
+order by o.ORDER_NUMBER asc;
+
+select oh.ORDER_NUMBER, c.CUSTOMER_NAME, oh.ORDER_DATE, oh.ORDER_STATUS, ol.LINE_NUMBER, i.ITEM_NAME
+from order_header oh
+join order_line ol
+on oh.HEADER_ID = ol.HEADER_ID
+join item i
+on i.ITEM_ID = ol.ITEM_ID
+join customer c
+on oh.CUSTOMER_ID = c.CUSTOMER_ID;
+
+select c.CUSTOMER_NUMBER, c.CUSTOMER_NAME, i.ITEM_NUMBER, i.ITEM_NAME, i.UOM_CODE
+from customer c
+join order_header oh
+on c.CUSTOMER_ID = oh.CUSTOMER_ID
+join order_line ol
+on ol.HEADER_ID = oh.HEADER_ID
+join item i
+on i.ITEM_ID = ol.ITEM_ID;
+
+select i.ITEM_NUMBER, i.ITEM_NAME, avg(ol.ITEM_ID) as average_unit_price, max(ol.ITEM_ID) as highest_unit_price, min(ol.ITEM_ID) as lowest_unit_price
+from item i 
+join order_line ol
+on i.ITEM_ID = ol.ITEM_ID
+join order_header oh
+on oh.HEADER_ID = ol.HEADER_ID
+group by ol.ITEM_ID;
+
+select c.CUSTOMER_NUMBER, c.CUSTOMER_NAME, c.TELEPHONE, c.START_DATE_ACTIVE, c.END_DATE_ACTIVE
+from customer c
+join order_header o
+on c.CUSTOMER_ID = o.CUSTOMER_ID
+where o.ORDER_STATUS = "CANCELLED";
+
+select sum(ol.UNIT_PRICE) * sum(ol.QUANTITY) as "Total Sales"
+from order_header oh
+join order_line ol
+where year(oh.order_date) and oh.ORDER_STATUS != "CANCELLED";
+
+CREATE INDEX idx_item_name ON item (ITEM_NAME);
