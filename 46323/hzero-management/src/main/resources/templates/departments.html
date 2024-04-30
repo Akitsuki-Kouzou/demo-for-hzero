@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manage Departments</title>
+    <link rel="stylesheet" type="text/css"  th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div class="container-fluid text-center">
+    <div><h2>Manage Departments</h2></div>
+    <div>
+        <a class="h4" th:href="@{/departments/new}">Add New Department</a>
+    </div>
+    <div th:if="${message}" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+    <div>
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>Department ID</th>
+                <th>Department Code</th>
+                <th>Department</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="department : ${listDepartment}">
+                <tr>
+                    <td>[[${department.departmentId}]]</td>
+                    <td>[[${department.departmentCode}]]</td>
+                    <td>[[${department.departmentName}]]</td>
+                    <td>
+                        <a class="h4" th:href="@{'/departments/edit/' + ${department.departmentId}}">Edit</a>
+                        <a class="h4" th:href="@{'/departments/delete/' + ${department.departmentId}}">Delete</a>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
