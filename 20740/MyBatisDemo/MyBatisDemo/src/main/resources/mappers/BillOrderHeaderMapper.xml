@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aki.mybatisdemo.BillOrderHeaderMapper">
+    
+    <resultMap id="resultMap" type="com.aki.mybatisdemo.mybatis.entity.BillOrderHeader">
+        <id property="id" column="id" jdbcType="DECIMAL"/>
+        <result property="billOrderNumber" column="bill_order_number" jdbcType="VARCHAR"/>
+        <result property="createType" column="create_type" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="create" useGeneratedKeys="true" keyProperty="id">
+        insert into pdsa_bill_order_header (bill_order_number, create_type)
+        values (#{billOrderNumber}, #{createType})
+    </insert>
+
+
+    <select id="queryByNumber1" resultType="com.aki.mybatisdemo.mybatis.entity.BillOrderHeader">
+        select * from pdsa_bill_order_header
+        where bill_order_number = #{aki}
+    </select>
+
+    <select id="queryByNumber2" resultType="com.aki.mybatisdemo.mybatis.entity.BillOrderHeader">
+        select id, bill_order_number billOrderNumber, create_type createType from pdsa_bill_order_header
+        where bill_order_number = #{billOrderNumber}
+    </select>
+
+    <select id="queryByNumber3" resultMap="resultMap">
+        select * from pdsa_bill_order_header
+        where bill_order_number = #{billOrderNumber}
+    </select>
+    <select id="detail" resultMap="resultMap">
+        select * from pdsa_bill_order_header
+        where id = #{id}
+    </select>
+</mapper>
+
