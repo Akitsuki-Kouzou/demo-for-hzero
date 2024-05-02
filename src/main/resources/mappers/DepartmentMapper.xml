@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springdemo.Mappers.DepartmentMapper">
+
+    <resultMap id="resultMap" type="com.example.springdemo.Entities.DepartmentEntity">
+        <id property="departmentCode" column="department_code" jdbcType="VARCHAR"/>
+        <result property="departmentName" column="department_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="countById" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM ms_department WHERE LOWER(department_code) = #{departmentCode}
+    </select>
+
+    <select id="searchDepartment" resultMap="resultMap">
+        SELECT * FROM ms_department
+        WHERE LOWER(department_code) LIKE #{departmentCode}
+        AND LOWER(department_name) LIKE #{departmentName}
+    </select>
+
+    <select id="getDepartmentByCode" resultMap="resultMap">
+        SELECT * FROM ms_department
+        WHERE department_code = #{departmentCode}
+    </select>
+
+    <insert id="createDepartment" keyProperty="department_code">
+        insert into ms_department (department_code, department_name)
+        values (#{departmentCode}, #{departmentName})
+    </insert>
+
+    <update id="updateDepartment" keyProperty="department_code">
+        update ms_department set department_name = #{departmentName}
+        where department_code = #{departmentCode}
+    </update>
+
+    <delete id="deleteDepartment">
+        delete from ms_department where department_code = #{departmentCode}
+    </delete>
+    
+    <select id="getAllDepartment" resultMap="resultMap">
+        select * from ms_department
+    </select>
+
+</mapper>
